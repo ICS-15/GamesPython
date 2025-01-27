@@ -113,7 +113,31 @@ def desenhar_blocos(blocos):
 ## chamar inicio de jogo
 blocos = criar_blocos(qtdade_blocos_linha, qtdade_linha_blocos)
 
+def desenhar_tela_intro():
+    tela.fill(cores["preta"])
+    fonte = pygame.font.Font(None, 50)
+    texto_inicio = fonte.render("BRICK BREAKER", True, cores["amarela"])
+    texto_instrucao = pygame.font.Font(None, 30).render("Pressione SPACE para iniciar", True, cores["branca"])
+    
+    # Centralizando o texto
+    tela.blit(texto_inicio, (tamanho_tela[0] // 2 - texto_inicio.get_width() // 2, 100))
+    tela.blit(texto_instrucao, (tamanho_tela[0] // 2 - texto_instrucao.get_width() // 2, 200))
 
+    pygame.display.flip( )
+
+# Tela de introdução
+intro_ativa = True
+
+while intro_ativa:
+    desenhar_tela_intro()
+    for evento in pygame.event.get():
+        if evento.type == pygame.QUIT:
+            intro_ativa = False
+        if evento.type == pygame.KEYDOWN:
+            if evento.key == pygame.K_SPACE:
+                intro_ativa = False  # Sai da tela de introdução
+
+    pygame.time.wait(1)
 
 # criar loop de jogo
 while not fim_jogo :
