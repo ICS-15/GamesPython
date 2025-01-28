@@ -79,7 +79,7 @@ def desenhar_tela_intro():
     tela.fill(cores["preta"])
     fonte = pygame.font.Font(None, 50)
     texto_inicio = fonte.render("Snake", True, cores["branca"])
-    texto_instrucao = pygame.font.Font(None, 30).render("Pressione SPACE para iniciar", True, cores["branca"])
+    texto_instrucao = pygame.font.Font(None, 30).render("Pressione qualquer tecla para iniciar", True, cores["branca"])
     texto_instrucao_2 = pygame.font.Font(None, 30).render("Utilize as setas ou as teclas a w d s para jogar", True, cores["branca"])
 
 
@@ -88,7 +88,7 @@ def desenhar_tela_intro():
     tela.blit(texto_instrucao, (largura // 2 - texto_instrucao.get_width() // 2, 200))
     tela.blit(texto_instrucao_2, (largura // 2 - texto_instrucao_2.get_width() // 2, 250))
 
-    pygame.display.flip( )
+    pygame.display.flip()
 
 # Tela de introdução
 def mostrar_intro():
@@ -100,7 +100,7 @@ def mostrar_intro():
             if evento.type == pygame.QUIT:
                 intro_ativa = False
             if evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_SPACE:
+                #if evento.key == pygame.K_SPACE:
                     intro_ativa = False  # Sai da tela de introdução
                     correr_jogo()
 
