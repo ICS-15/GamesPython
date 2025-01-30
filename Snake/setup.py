@@ -1,19 +1,30 @@
 from cx_Freeze import setup, Executable
+import os
 
-# Lista de arquivos que seu jogo usa (se houver, como imagens ou sons)
-# Aqui, você pode adicionar os arquivos extras que seu jogo precisar
-# Por exemplo, se o seu jogo usa a pasta 'imagens' e 'sons', faça:
-# include_files = ['imagens/', 'sons/']
-#options = {
+# List of files your game uses (if any, like images or sounds)
+# Here, you can add the extra files your game needs
+# For example, if your game uses the 'images' and 'sounds' folders, do this:
+# include_files = ['images/', 'sounds/']
+# options = {
 #       'build_exe': {
 #           'include_files': include_files,
 #       }
 #   },
 
-# Configuração básica
+score_file = os.path.join(os.path.dirname(__file__), "scores.txt")
+
+# Basic setup
 setup(
     name = "Snake",
     version = "1.0",
-    description = "Jogo na snake criado por Inês Saragoça",
-    executables = [Executable("jogo.py", base="Win32GUI")]  # Use base="Win32GUI" se for uma aplicação gráfica
+    description = "Snake game created by Inês Saragoça",
+    executables = [Executable("game.py", base="Win32GUI")], # Use base="Win32GUI" if it's a graphical application
+    options={
+        'build_exe': {
+            'include_files': [score_file] # Include the scores.txt file
+        }  
+    }
 )
+
+# python setup.py build
+
