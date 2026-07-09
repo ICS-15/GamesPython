@@ -1,6 +1,7 @@
 # Initial configurations
 import pygame
 import random
+import os
 
 ## initialize pygame
 pygame.init()
@@ -11,6 +12,7 @@ width, height = 1200, 600
 screen = pygame.display.set_mode((width, height))
 
 clock = pygame.time.Clock()
+score_file = os.path.join(os.path.dirname(__file__), "scores.txt")
 
 ## colors to use in the game 
 colors = {
@@ -53,17 +55,17 @@ def draw_score(score):
 # Updates the score file with the highest score between the current score and the previous high score
 def update_score(nscore):
     score = max_score()
-    with open('scores.txt', 'w') as f:
+    with open(score_file, 'w') as f:
         f.write(str(max(score, nscore)))
 
 
 # Reads and returns the highest score from the score file
 def max_score():
-    with open('scores.txt', 'r') as f:
+    with open(score_file, 'r') as f:
         return int(f.readline().strip())
 
 def reset_score():
-    with open('scores.txt', 'w') as f:
+    with open(score_file, 'w') as f:
         f.write(str(0))
 
 def select_speed(key, last_direction, speed_x, speed_y):
