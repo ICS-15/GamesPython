@@ -3,6 +3,8 @@ import pygame
 import random
 import os
 from utils.scoreManager import *
+from utils.intro import show_intro
+from utils.config import *
 
 score_file = get_score_file(os.path.dirname(__file__))
 
@@ -11,18 +13,11 @@ pygame.init()
 
 ## initialize screen
 pygame.display.set_caption("Snake game")
-width, height = 800, 600
+width, height = WIDTH, HEIGHT
 screen = pygame.display.set_mode((width, height))
 
 clock = pygame.time.Clock()
 
-## colors to use in the game 
-colors = {
-    "white": (255, 255, 255), 
-    "black": (0, 0, 0),
-    "red": (255, 0, 0),
-    "green": (0, 255, 0)
-}
 
 snake_colors = {
     "blue": (0, 0, 255),
@@ -78,46 +73,6 @@ def select_speed(key, last_direction, speed_x, speed_y):
         speed_y = speed_y
         new_direction = last_direction
     return speed_x, speed_y, new_direction
-
-def draw_intro_screen():
-    screen.fill(colors["black"])
-    font = pygame.font.Font(None, 50)
-    start_text = font.render("Snake", True, colors["white"])
-    instruction_text = pygame.font.Font(None, 30).render("Press any key to start", True, colors["white"])
-    instruction_text_2 = pygame.font.Font(None, 30).render("Use arrow keys or WASD to play", True, colors["white"])
-    score = max_score(score_file)
-    score_text = pygame.font.Font(None, 30).render(f"Top Score: {score}", True, colors["white"])
-    score_reset_text = pygame.font.Font(None, 30).render(f"Use R to reset the top score", True, colors["white"])
-
-
-    # Center the text
-    screen.blit(start_text, (width // 2 - start_text.get_width() // 2, 100))
-    screen.blit(instruction_text, (width // 2 - instruction_text.get_width() // 2, 200))
-    screen.blit(instruction_text_2, (width // 2 - instruction_text_2.get_width() // 2, 225))
-    screen.blit(score_text, (width // 2 - score_text.get_width() // 2, 300))
-    screen.blit(score_reset_text, (width // 2 - score_reset_text.get_width() // 2, 325))
-
-
-
-    pygame.display.flip()
-
-# Intro screen
-def show_intro():
-    intro_active = True
-
-    while intro_active:
-        draw_intro_screen()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                intro_active = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                reset_score(score_file)
-            if event.type == pygame.KEYDOWN and (event.key != pygame.K_r and event.key != pygame.K_ESCAPE):
-                #if event.key == pygame.K_SPACE:
-                    intro_active = False  # Exit the intro screen
-                    start_game()
-
-    pygame.time.wait(1)
 
 def start_game():
     ## game start variables
@@ -201,11 +156,29 @@ def start_game():
 
         if game_over:
             update_score(score_file, snake_size - 1)
-            show_intro()
+            show_intro(
+                screen,
+                "Snake",
+                score_file,
+                [
+                    "Press any key to start",
+                    "Use arrows or WASD to play"
+                ],
+                start_game
+            )
         clock.tick(game_speed)
 
 def main():
-    show_intro()
+    show_intro(
+        screen,
+        "Snake",
+        score_file,
+        [
+            "Press any key to start",
+            "Use arrows or WASD to play"
+        ],
+        start_game
+    )
 
 if __name__ == "__main__":
     main()

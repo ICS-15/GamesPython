@@ -1,6 +1,8 @@
 import pygame
 import os
 from utils.scoreManager import *
+from utils.config import *
+from utils.intro import show_intro
 
 score_file = get_score_file(os.path.dirname(__file__))
 
@@ -8,7 +10,7 @@ score_file = get_score_file(os.path.dirname(__file__))
 pygame.init()
 
 # Configure game window
-width, height = 800, 600
+width, height = WIDTH, HEIGHT
 screen = pygame.display.set_mode((width, height))
 
 # Game title
@@ -50,20 +52,10 @@ def create_blocks(blocks_per_row, block_rows):
     return blocks
 
 
-# Colors
-colors = {
-    "white": (255, 255, 255),
-    "black": (0, 0, 0),
-    "yellow": (255, 255, 0),
-    "blue": (0, 0, 255),
-    "green": (0, 255, 0),
-}
-
 # Game management variables
 game_over = False
 score = 0
 ball_direction = [1, -1]
-
 
 # Game functions
 def move_player():
@@ -117,7 +109,6 @@ def draw_score(score):
 
     return score >= total_blocks
 
-
 # Draw game elements
 def draw_game():
     screen.fill(colors["black"])
@@ -129,51 +120,8 @@ def draw_blocks(blocks):
     for block in blocks:
         pygame.draw.rect(screen, colors["green"], block)
 
-
 # Create blocks
 blocks = create_blocks(blocks_per_row, block_rows)
-
-
-def draw_intro_screen():
-    screen.fill(colors["black"])
-    font = pygame.font.Font(None, 50)
-    start_text = font.render("Brick Breaker", True, colors["white"])
-    instruction_text = pygame.font.Font(None, 30).render("Press any key to start", True, colors["white"])
-    instruction_text_2 = pygame.font.Font(None, 30).render("Use arrow keys or WASD to play", True, colors["white"])
-    score = max_score(score_file)
-    score_text = pygame.font.Font(None, 30).render(f"Top Score: {score}", True, colors["white"])
-    score_reset_text = pygame.font.Font(None, 30).render(f"Use R to reset the top score", True, colors["white"])
-
-
-    # Center the text
-    screen.blit(start_text, (width // 2 - start_text.get_width() // 2, 100))
-    screen.blit(instruction_text, (width // 2 - instruction_text.get_width() // 2, 200))
-    screen.blit(instruction_text_2, (width // 2 - instruction_text_2.get_width() // 2, 225))
-    screen.blit(score_text, (width // 2 - score_text.get_width() // 2, 300))
-    screen.blit(score_reset_text, (width // 2 - score_reset_text.get_width() // 2, 325))
-
-    pygame.display.flip()
-
-
-def show_intro():
-
-    intro_active = True
-
-
-    while intro_active:
-        draw_intro_screen()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                intro_active = False
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                reset_score(score_file)
-            if event.type == pygame.KEYDOWN and (event.key != pygame.K_r and event.key != pygame.K_ESCAPE):
-                #if event.key == pygame.K_SPACE:
-                    intro_active = False  # Exit the intro screen
-
-    pygame.time.wait(1)
-
-    start_game()
 
 # Main game loop
 def start_game():
@@ -214,14 +162,32 @@ def start_game():
         
         if game_over:
             update_score(score_file, current_score)
-            show_intro()
+            show_intro(
+                screen,
+                "Brick Breaker",
+                score_file,
+                [
+                    "Press any key to start",
+                    "Use arrows or WASD to play"
+                ],
+                start_game
+            )
             return
 
         pygame.time.wait(1)
         pygame.display.flip()
 
 def main():
-    show_intro()
+    show_intro(
+        screen,
+        "Brick Breaker",
+        score_file,
+        [
+            "Press any key to start",
+            "Use arrows or WASD to play"
+        ],
+        start_game
+    )
 
 if __name__ == "__main__":
     main()
