@@ -2,7 +2,7 @@ import pygame
 from utils.scoreManager import max_score, reset_score
 from utils.config import *
 
-
+# Function to draw the intro screen
 def draw_intro_screen(screen,title,score_file,instructions):
 
     screen.fill(colors["black"])
@@ -18,15 +18,11 @@ def draw_intro_screen(screen,title,score_file,instructions):
 
     screen.blit(
         title_text,
-        (
-            screen.get_width() // 2 - title_text.get_width() // 2,
-            100
-        )
-    )
-
+        (screen.get_width() // 2 - title_text.get_width() // 2,100))
 
     y = 200
 
+    # Draw the instructions on the screen
     for instruction in instructions:
 
         text = text_font.render(
@@ -37,15 +33,11 @@ def draw_intro_screen(screen,title,score_file,instructions):
 
         screen.blit(
             text,
-            (
-                screen.get_width() // 2 - text.get_width() // 2,
-                y
-            )
-        )
+            (screen.get_width() // 2 - text.get_width() // 2,y))
 
         y += 30
 
-
+    # Draw the top score and reset score instructions
     score = max_score(score_file)
 
     score_text = text_font.render(
@@ -56,11 +48,7 @@ def draw_intro_screen(screen,title,score_file,instructions):
 
     screen.blit(
         score_text,
-        (
-            screen.get_width() // 2 - score_text.get_width() // 2,
-            y + 30
-        )
-    )
+        (screen.get_width() // 2 - score_text.get_width() // 2,y + 30))
 
 
     reset_text = text_font.render(
@@ -71,33 +59,26 @@ def draw_intro_screen(screen,title,score_file,instructions):
 
     screen.blit(
         reset_text,
-        (
-            screen.get_width() // 2 - reset_text.get_width() // 2,
-            y + 60
-        )
-    )
+        (screen.get_width() // 2 - reset_text.get_width() // 2,y + 60))
 
     pygame.display.flip()
 
-
-
+# Function to show the intro screen and handle user input
 def show_intro(screen,title,score_file,instructions,start_game):
     intro_active = True
 
     while intro_active:
-
+        # Draw the intro screen
         draw_intro_screen(screen,title,score_file,instructions)
 
         for event in pygame.event.get():
 
             if event.type == pygame.QUIT:
-                pygame.quit()
                 return
 
             if event.type == pygame.KEYDOWN:
 
                 if event.key == pygame.K_ESCAPE:
-                    pygame.quit()
                     return
 
                 elif event.key == pygame.K_r:
@@ -105,6 +86,5 @@ def show_intro(screen,title,score_file,instructions,start_game):
 
                 else:
                     intro_active = False
-
 
     start_game()

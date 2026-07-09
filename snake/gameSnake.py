@@ -8,17 +8,17 @@ from utils.config import *
 
 score_file = get_score_file(os.path.dirname(__file__))
 
-## initialize pygame
+## Initialize pygame
 pygame.init()
 
-## initialize screen
+## Initialize screen
 pygame.display.set_caption("Snake game")
 width, height = WIDTH, HEIGHT
 screen = pygame.display.set_mode((width, height))
 
 clock = pygame.time.Clock()
 
-
+# Define colors for the snake
 snake_colors = {
     "blue": (0, 0, 255),
     "yellow": (255, 255, 0),
@@ -27,29 +27,32 @@ snake_colors = {
     "white": (255, 255, 255)
 }
 
-## parameters for the snake
+## Parameters for the snake
 square_size = 20
 game_speed = 10
 
 def create_food():
-    ## use round for aligning items
+    ## Use round for aligning items
     food_x = round(random.randrange(0, width - square_size) / float(square_size)) * float(square_size)
     food_y = round(random.randrange(0, height - square_size) / float(square_size)) * float(square_size)
     return food_x, food_y
 
+# Function to draw the food on the screen
 def draw_food(size, food_x, food_y):
     pygame.draw.rect(screen, colors["green"], [food_x, food_y, size, size])
 
+# Function to draw the snake on the screen
 def draw_snake(size, pixels, snake_color):
     for pixel in pixels:
         pygame.draw.rect(screen, snake_color, [pixel[0], pixel[1], size, size])
 
+# Function to draw the score on the screen
 def draw_score(score):
     font = pygame.font.SysFont("Helvetica", 35)
     text = font.render(f"Score: {score}", True, colors["red"])
     screen.blit(text, [5, 1])
 
-
+# Function to select the speed and direction of the snake based on user input
 def select_speed(key, last_direction, speed_x, speed_y):
     if (key == pygame.K_s or key == pygame.K_DOWN) and last_direction != 'UP':
         speed_x = 0
@@ -75,7 +78,7 @@ def select_speed(key, last_direction, speed_x, speed_y):
     return speed_x, speed_y, new_direction
 
 def start_game():
-    ## game start variables
+    ## Game start variables
     game_over = False
 
     x = width / 2
@@ -85,7 +88,7 @@ def start_game():
     speed_y = 0
 
     snake_size = 1
-    ## allows the snake to grow
+    ## Allows the snake to grow
     pixels = []
     food_x, food_y =  create_food()
     last_direction = 'RIGHT'
@@ -94,7 +97,7 @@ def start_game():
     new_snake_color = snake_color
     game_speed = 10
     
-    ## create infinite loop
+    ## Create infinite loop
     while not game_over :
         
         screen.fill(colors["black"])
@@ -110,31 +113,31 @@ def start_game():
             elif event.type == pygame.KEYDOWN:
                 speed_x, speed_y, last_direction = select_speed(event.key, last_direction, speed_x, speed_y)  
 
-        ## update snake
+        ## Update snake
         x += speed_x
         y += speed_y
 
-        ## snake hits the wall
+        ## Snake hits the wall
         if x < 0 or x >= width or y < 0 or y >= height:
             game_over = True
 
-        # draw objects on screen
-        ## food
+        # Draw objects on screen
+        ## Food
         draw_food(square_size, food_x, food_y)
-        ## snake
+        ## Snake
         pixels.append([x,y])
-        ## snake movement
+        ## Snake movement
         if len(pixels) > snake_size:
             del pixels[0] 
 
-        ## snake hits itself 
+        ## Snake hits itself 
         for pixel in pixels[:-1]:
             if pixel == [x, y]:
                 game_over = True
 
         draw_snake(square_size, pixels,snake_color)
 
-        ## score
+        ## Score
         score = draw_score(snake_size - 1)
         if (snake_size - 1) % 5 == 0 and snake_size != 1 and not color_changed:
             while snake_color == new_snake_color: 
@@ -146,14 +149,15 @@ def start_game():
         if (snake_size - 1) % 5 != 0:
             color_changed = False
 
-        ## update screen
+        ## Update screen
         pygame.display.update()
 
-        ## create new food
+        ## Create new food
         if x == food_x and y == food_y:
             snake_size += 1
             food_x, food_y = create_food()
 
+        # Check if the game is over to update the score and show the intro screen
         if game_over:
             update_score(score_file, snake_size - 1)
             show_intro(
@@ -166,8 +170,10 @@ def start_game():
                 ],
                 start_game
             )
+        ## Control game speed
         clock.tick(game_speed)
 
+# Main function to start the game and show the intro screen
 def main():
     show_intro(
         screen,

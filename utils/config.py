@@ -1,3 +1,4 @@
+# Utility functions for game configuration and settings
 
 colors = {
     "white": (255, 255, 255),

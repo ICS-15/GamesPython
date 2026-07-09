@@ -27,7 +27,7 @@ blocks_per_row = 8
 block_rows = 5
 total_blocks = blocks_per_row * block_rows
 
-
+# Function to create blocks for the game
 def create_blocks(blocks_per_row, block_rows):
     screen_height = height
     screen_width = width
@@ -38,7 +38,7 @@ def create_blocks(blocks_per_row, block_rows):
     row_spacing = block_height + 15
 
     blocks = []
-
+    # Create blocks in a grid pattern
     for row in range(block_rows):
         for column in range(blocks_per_row):
             block = pygame.Rect(
@@ -50,7 +50,6 @@ def create_blocks(blocks_per_row, block_rows):
             blocks.append(block)
 
     return blocks
-
 
 # Game management variables
 game_over = False
@@ -69,7 +68,7 @@ def move_player():
         if player.x > 0:
             player.x -= 2.5
 
-
+# Function to move the ball and handle collisions
 def move_ball(ball):
     direction = ball_direction
 
@@ -101,7 +100,7 @@ def move_ball(ball):
 
     return direction
 
-
+# Function to draw the score on the screen
 def draw_score(score):
     font = pygame.font.Font(None, 30)
     text = font.render(f"Score: {score}", True, colors["yellow"])
@@ -115,7 +114,7 @@ def draw_game():
     pygame.draw.rect(screen, colors["blue"], player)
     pygame.draw.rect(screen, colors["white"], ball)
 
-
+# Function to draw the blocks on the screen
 def draw_blocks(blocks):
     for block in blocks:
         pygame.draw.rect(screen, colors["green"], block)
@@ -148,9 +147,9 @@ def start_game():
                 return
 
         move_player()
-
         ball_direction = move_ball(ball)
 
+        # Check if the ball is lost (goes below the screen)
         if not ball_direction:
             current_score = total_blocks - len(blocks)
 
@@ -160,6 +159,7 @@ def start_game():
             )
             game_over = True
         
+        # Check if the player has won (all blocks are destroyed)
         if game_over:
             update_score(score_file, current_score)
             show_intro(
@@ -177,6 +177,7 @@ def start_game():
         pygame.time.wait(1)
         pygame.display.flip()
 
+# Main function to start the game and show the intro screen
 def main():
     show_intro(
         screen,

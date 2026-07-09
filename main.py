@@ -1,25 +1,15 @@
 import pygame
-import subprocess
-import sys
+from utils.config import *
 
 pygame.init()
 
-# Window
-width = 800
-height = 600
-
+# Window size
+width, height = WIDTH, HEIGHT
 screen = pygame.display.set_mode((width, height))
 
 pygame.display.set_caption("Python Games")
 
-# Colors
-colors = {
-    "black": (0, 0, 0),
-    "white": (255, 255, 255),
-    "yellow": (255, 255, 0),
-    "green": (0, 255, 0)
-}
-
+# Function to draw the main menu
 def draw_menu():
 
     screen.fill(colors["black"])
@@ -27,6 +17,7 @@ def draw_menu():
     title_font = pygame.font.Font(None, 60)
     font = pygame.font.Font(None, 40)
 
+    # Render the text for the menu options
     title = title_font.render(
         "Python Games",
         True,
@@ -51,41 +42,27 @@ def draw_menu():
         colors["green"]
     )
 
+    # Draw the text on the screen
     screen.blit(
         title,
-        (
-            width//2 - title.get_width()//2,
-            100
-        )
-    )
+        (width//2 - title.get_width()//2,100))
 
     screen.blit(
         snake_text,
-        (
-            width//2 - snake_text.get_width()//2,
-            250
-        )
-    )
+        (width//2 - snake_text.get_width()//2,250))
 
     screen.blit(
         breaker_text,
-        (
-            width//2 - breaker_text.get_width()//2,
-            320
-        )
-    )
+        (width//2 - breaker_text.get_width()//2,320))
 
     screen.blit(
         exit_text,
-        (
-            width//2 - exit_text.get_width()//2,
-            390
-        )
-    )
+        (width//2 - exit_text.get_width()//2,390))
+    
     pygame.display.flip()
 
+# Function to launch the selected game
 def launch_game(game):
-    pygame.quit()
 
     if game == "snake":
         from snake.gameSnake import main
@@ -98,9 +75,7 @@ def launch_game(game):
     pygame.init()
 
     global screen
-
     screen = pygame.display.set_mode((width, height))
-
     pygame.display.set_caption("Python Games")
 
 
@@ -112,8 +87,8 @@ def main():
 
         draw_menu()
 
+        # Handle events - key presses and window close
         for event in pygame.event.get():
-
 
             if event.type == pygame.QUIT:
                 running = False

@@ -1,6 +1,6 @@
 import os
 
-
+# Utility functions for managing game scores
 def get_score_file(game_folder):
     return os.path.join(game_folder, "scores.txt")
 
@@ -21,7 +21,7 @@ def update_score(score_file, new_score):
     with open(score_file, "w") as f:
         f.write(str(max(high_score, new_score)))
 
-
+# Resets the score in the score file to 0
 def reset_score(score_file):
     with open(score_file, "w") as f:
         f.write("0")

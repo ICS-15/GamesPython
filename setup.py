@@ -4,6 +4,7 @@ import os
 snake_score = os.path.join("snake", "scores.txt")
 brick_score = os.path.join("brickBreaker", "scores.txt")
 
+# Define build options for cx_Freeze
 build_options = {
     "include_files": [
         snake_score,
@@ -14,6 +15,7 @@ build_options = {
     ]
 }
 
+# Setup configuration for cx_Freeze
 setup(
     name="Python Games",
     version="1.0",
@@ -26,6 +28,6 @@ setup(
         )
     ],
 )
-
+# In case you want to build the executable, run the following command in the terminal:
 # python setup.py build
 
