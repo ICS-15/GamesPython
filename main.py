@@ -88,22 +88,12 @@ def launch_game(game):
     pygame.quit()
 
     if game == "snake":
-        subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "snake.gameSnake"
-            ]
-        )
+        from snake.gameSnake import main
+        main()
 
     elif game == "brickBreaker":
-        subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "brickBreaker.gameBrickBreaker"
-            ]
-        )
+        from brickBreaker.gameBrickBreaker import main
+        main()
 
     pygame.init()
 
