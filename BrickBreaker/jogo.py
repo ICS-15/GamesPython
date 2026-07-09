@@ -1,164 +1,192 @@
 import pygame
 
-# inicializar
+# Initialize
 pygame.init()
 
-## configurar tela de jogo
-tamanho_tela = (800,800)
-tela = pygame.display.set_mode(tamanho_tela)
+# Configure game window
+screen_size = (800, 800)
+screen = pygame.display.set_mode(screen_size)
 
-## nome jogo
+# Game title
 pygame.display.set_caption("Brick Breaker Game")
 
-## variaveis do jogo
-tamanho_bola = 15
-bola = pygame.Rect(100, 500, tamanho_bola, tamanho_bola)
+# Game variables
+ball_size = 15
+ball = pygame.Rect(100, 500, ball_size, ball_size)
 
-tamanho_jogador = 100
-jogador = pygame.Rect(0, 750, tamanho_jogador, tamanho_bola)
+player_width = 100
+player = pygame.Rect(0, 750, player_width, ball_size)
 
-qtdade_blocos_linha = 8
-qtdade_linha_blocos = 5
-qtdade_blocos_totais = qtdade_blocos_linha * qtdade_linha_blocos
+blocks_per_row = 8
+block_rows = 5
+total_blocks = blocks_per_row * block_rows
 
-def criar_blocos(qtdade_blocos_linha, qtdade_linha_blocos):
-    altura_tela = tamanho_tela[1]
-    largura_tela = tamanho_tela[0]
 
-    distancia_entre_blocos = 5
-    largura_bloco = largura_tela / qtdade_blocos_linha - distancia_entre_blocos
-    altura_bloco = 15
-    distancia_entre_linhas = altura_bloco + 15
+def create_blocks(blocks_per_row, block_rows):
+    screen_height = screen_size[1]
+    screen_width = screen_size[0]
 
-    blocos = []
+    block_spacing = 5
+    block_width = screen_width / blocks_per_row - block_spacing
+    block_height = 15
+    row_spacing = block_height + 15
 
-    for j in range(qtdade_linha_blocos) :
-        for i in range(qtdade_blocos_linha) :
-            # criar blocos
-            bloco = pygame.Rect(i * (largura_bloco + distancia_entre_blocos), j *distancia_entre_linhas, largura_bloco, altura_bloco)
-            blocos.append(bloco)
+    blocks = []
 
-    return blocos
+    for row in range(block_rows):
+        for column in range(blocks_per_row):
+            block = pygame.Rect(
+                column * (block_width + block_spacing),
+                row * row_spacing,
+                block_width,
+                block_height,
+            )
+            blocks.append(block)
 
-## cores a usar no jogo
-cores = {
-    "branca" : (255, 255, 255),
-    "preta" : (0, 0, 0),
-    "amarela" : (255, 255, 0),
-    "azul" : (0, 0, 255),
-    "verde" : (0, 255, 0)
+    return blocks
+
+
+# Colors
+colors = {
+    "white": (255, 255, 255),
+    "black": (0, 0, 0),
+    "yellow": (255, 255, 0),
+    "blue": (0, 0, 255),
+    "green": (0, 255, 0),
 }
 
-## variaveis gestao do jogo
-fim_jogo = False
-pontuacao = 0
-movimento_bola = [1, -1]
+# Game management variables
+game_over = False
+score = 0
+ball_direction = [1, -1]
 
 
-# funções de jogo
-def movimentar_jogador(evento):
-    if evento.type == pygame.KEYDOWN : 
-        if evento.key == pygame.K_RIGHT:
-            if jogador.x + tamanho_jogador < tamanho_tela[0] :
-                jogador.x += 2.5
-        if evento.key == pygame.K_LEFT:
-            if jogador.x > 0 :
-                jogador.x -= 2.5
+# Game functions
+def move_player(event):
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_RIGHT:
+            if player.x + player_width < screen_size[0]:
+                player.x += 2.5
 
-def movimentar_bola(bola):
-    movimento = movimento_bola
-    bola.x += movimento[0]
-    bola.y += movimento[1]
+        if event.key == pygame.K_LEFT:
+            if player.x > 0:
+                player.x -= 2.5
 
-    # qd bola bate nos extremos tela
-    if bola.x <= 0 :
-        movimento[0] = -movimento[0]
-    if bola.y <= 0 :
-        movimento[1] = -movimento[1]
-    if bola.x + tamanho_bola >= tamanho_tela[0] :
-        movimento[0] = -movimento[0]
-    if bola.y + tamanho_bola >= tamanho_tela[1] :
-        movimento = None
 
-    #qd bola bate nos restantes elementos 
-    if jogador.collidepoint(bola.x, bola.y) :
-        movimento[1] = -movimento[1]
-    for bloco in blocos :
-        if bloco.collidepoint(bola.x, bola.y) :
-            blocos.remove(bloco)
-            movimento[1] = -movimento[1]
+def move_ball(ball):
+    direction = ball_direction
 
-    return movimento
+    ball.x += direction[0]
+    ball.y += direction[1]
 
-def atualizar_pontuacao(pontuacao):
-    fonte = pygame.font.Font(None,30)
-    texto = fonte.render(f"Pontuacao {pontuacao}", 1, cores["amarela"])
-    tela.blit(texto,(0, 750))
+    # Ball hits screen edges
+    if ball.x <= 0:
+        direction[0] = -direction[0]
 
-    if pontuacao >= qtdade_blocos_totais :
-        return True
-    else : 
-        return False
- 
-# desenhar elementos na tela
-def desenhar_inicio_jogo():
-    tela.fill(cores["preta"])
-    pygame.draw.rect(tela, cores["azul"], jogador)
-    pygame.draw.rect(tela, cores["branca"], bola)
+    if ball.y <= 0:
+        direction[1] = -direction[1]
 
-def desenhar_blocos(blocos):
-    for bloco in blocos:
-        pygame.draw.rect(tela, cores["verde"], bloco)
+    if ball.x + ball_size >= screen_size[0]:
+        direction[0] = -direction[0]
 
-## chamar inicio de jogo
-blocos = criar_blocos(qtdade_blocos_linha, qtdade_linha_blocos)
+    if ball.y + ball_size >= screen_size[1]:
+        direction = None
 
-def desenhar_tela_intro():
-    tela.fill(cores["preta"])
-    fonte = pygame.font.Font(None, 50)
-    texto_inicio = fonte.render("BRICK BREAKER", True, cores["amarela"])
-    texto_instrucao = pygame.font.Font(None, 30).render("Pressione SPACE para iniciar", True, cores["branca"])
-    
-    # Centralizando o texto
-    tela.blit(texto_inicio, (tamanho_tela[0] // 2 - texto_inicio.get_width() // 2, 100))
-    tela.blit(texto_instrucao, (tamanho_tela[0] // 2 - texto_instrucao.get_width() // 2, 200))
+    # Ball hits paddle
+    if player.collidepoint(ball.x, ball.y):
+        direction[1] = -direction[1]
 
-    pygame.display.flip( )
+    # Ball hits blocks
+    for block in blocks:
+        if block.collidepoint(ball.x, ball.y):
+            blocks.remove(block)
+            direction[1] = -direction[1]
 
-# Tela de introdução
-intro_ativa = True
+    return direction
 
-while intro_ativa:
-    desenhar_tela_intro()
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            intro_ativa = False
-        if evento.type == pygame.KEYDOWN:
-            if evento.key == pygame.K_SPACE:
-                intro_ativa = False  # Sai da tela de introdução
 
-    pygame.time.wait(1)
+def update_score(score):
+    font = pygame.font.Font(None, 30)
+    text = font.render(f"Score: {score}", True, colors["yellow"])
+    screen.blit(text, (0, 750))
 
-# criar loop de jogo
-while not fim_jogo :
-    # redesenhar a cada iteracao
-    desenhar_inicio_jogo()
-    desenhar_blocos(blocos)
+    return score >= total_blocks
 
-    fim_jogo = atualizar_pontuacao(qtdade_blocos_totais - len(blocos)) 
-    for evento in pygame.event.get() :  
-        if evento.type == pygame.QUIT : 
-            fim_jogo = True
-    movimentar_jogador(evento)
 
-    movimento_bola = movimentar_bola(bola)
-    if not movimento_bola :
-        fim_jogo = True
+# Draw game elements
+def draw_game():
+    screen.fill(colors["black"])
+    pygame.draw.rect(screen, colors["blue"], player)
+    pygame.draw.rect(screen, colors["white"], ball)
 
-    # tempo de espera para correr o loop outra vez
-    pygame.time.wait(1)
-    # atualiza a tela 
+
+def draw_blocks(blocks):
+    for block in blocks:
+        pygame.draw.rect(screen, colors["green"], block)
+
+
+# Create blocks
+blocks = create_blocks(blocks_per_row, block_rows)
+
+
+def draw_intro_screen():
+    screen.fill(colors["black"])
+
+    title_font = pygame.font.Font(None, 50)
+    instruction_font = pygame.font.Font(None, 30)
+
+    title = title_font.render("BRICK BREAKER", True, colors["yellow"])
+    instruction = instruction_font.render(
+        "Press SPACE to start", True, colors["white"]
+    )
+
+    screen.blit(title, (screen_size[0] // 2 - title.get_width() // 2, 100))
+    screen.blit(
+        instruction,
+        (screen_size[0] // 2 - instruction.get_width() // 2, 200),
+    )
+
     pygame.display.flip()
 
-## sair do jogo
+
+# Intro screen
+intro_active = True
+
+while intro_active:
+    draw_intro_screen()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            intro_active = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                intro_active = False
+
+    pygame.time.wait(1)
+
+
+# Main game loop
+while not game_over:
+    draw_game()
+    draw_blocks(blocks)
+
+    game_over = update_score(total_blocks - len(blocks))
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            game_over = True
+
+    move_player(event)
+
+    ball_direction = move_ball(ball)
+
+    if not ball_direction:
+        game_over = True
+
+    pygame.time.wait(1)
+    pygame.display.flip()
+
+
+# Quit game
 pygame.quit()
